@@ -24,10 +24,11 @@ ctx.lineWidth = 5;
 
 
 
-
+//setting up the canvas
 gameCanvas.setAttribute('height', canvasHeight);
 gameCanvas.setAttribute('width', canvasWidth);
 
+//run the game loop when the page loads - start with an instance of the two objects;
 window.addEventListener("DOMContentLoaded", (e) => {
     apple = new Apple(unitSize, unitSize, "blue");
     snake = new Snake(snakeX, snakeY, "green");
@@ -36,16 +37,15 @@ window.addEventListener("DOMContentLoaded", (e) => {
     const runGame = setInterval(gameLoop, 120);
 
 })
-
+//for getting key info
 document.addEventListener('keydown', keyAdapter);
-
+//Apple object and rendering 
 class Apple {
     constructor(width, height, color) {
         this.appleX = Math.round(Math.random() * (parseInt(canvasWidth) / unitSize - 1)) * unitSize;
         this.appleY = Math.round(Math.random() * (parseInt(canvasHeight) / unitSize - 1)) * unitSize;
         this.width = width;
         this.height = height;
-        this.isAlive = true;
         this.color = color;
 
         this.render = function () {
@@ -55,15 +55,14 @@ class Apple {
         }
     }
 }
-
+//Snake object and rendering 
 class Snake {
     constructor( snakeX, snakeY, color) {
    
         this.snakeX = snakeX;
         this.snakeY = snakeY;
         this.color = color;
-        this.isAlive = true;
-
+     
         this.render = function () {
 
             for (let i = 0; i < snakeLength; i++) {
@@ -82,6 +81,7 @@ class Snake {
     }
 }
 
+//if no Collisions, run all these methods.... 
 
 function gameLoop() {
     if (running) {
@@ -103,12 +103,14 @@ function gameLoop() {
 
 
 function movementHandler(e) {
+    //Update all the values to be 'historic values', so that next rendering will have 
+    //index 1 a the current index 0 position, etc
     for (let i = snakeLength; i > 0; i--) {
         snakeX[i] = snakeX[i - 1];
         snakeY[i] = snakeY[i - 1];
     }
 
-
+    //depending on the direction update 0 index to be at the new location
     switch (direction) {
         case 'U':
             //move snake up
@@ -163,8 +165,10 @@ function keyAdapter(e) {
 
 
 function checkApple() {
-    console.log(snakeX[0], snakeY[0]);
-    console.log(apple.appleX, apple.appleY);
+    //if the x and y coordinates of the head of snake matches the apple, 
+    // then make the snake longer, make the array bigger for the next rendering
+    //also recreate a new instance of apple to change its location
+
     if (snakeX[0] === apple.appleX && snakeY[0] === apple.appleY) {
         snakeLength++;
         snakeX.push(0);
@@ -173,6 +177,8 @@ function checkApple() {
         apple = new Apple(unitSize, unitSize, "blue");
     }
 }
+
+//if collissions with the body itself, or borders, stop it from running
 function checkCollisions() {
     //checks if head collides with body
     for (let i = snakeLength; i > 0; i--) {
@@ -199,6 +205,8 @@ function checkCollisions() {
 
 
 }
+
+//just for ease.optional
 function drawGrid() {
     for (let i = 0; i < intWidth / unitSize; i++) {
 
